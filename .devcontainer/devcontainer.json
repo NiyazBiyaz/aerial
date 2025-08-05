@@ -1,0 +1,27 @@
+{
+    "name": "Aerial Dev",
+    "remoteUser": "root",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "runArgs": ["--gpus", "all", "--privileged"],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-toolsai.jupyter",
+                "sbsnippets.pytorch-snippets",
+                "ms-dotnettools.vscode-dotnet-runtime",
+                "ms-dotnettools.csharp",
+                "ms-dotnettools.csdevkit",
+                "kreativ-software.csharpextensions",
+                "jmrog.vscode-nuget-package-manager",
+                "editorconfig.editorconfig",
+                "njpwerner.autodocstring",
+                "ms-azuretools.vscode-containers",
+                "christian-kohler.path-intellisense",
+                "pkief.material-icon-theme"
+            ]
+        }
+    }
+}
