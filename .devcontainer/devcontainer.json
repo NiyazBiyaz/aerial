@@ -4,6 +4,7 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
+    "postCreateCommand": "cd /workspaces/aerial/ && chmod +x setup.sh && ./setup.sh",
     "runArgs": ["--gpus", "all", "--privileged"],
     "customizations": {
         "vscode": {
