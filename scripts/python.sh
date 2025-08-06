@@ -20,7 +20,7 @@ eval "$(getoptions parser_definition) exit 1"
 VERSION="$MAJOR.$MINOR"
 
 
-if [[ "$(python --version)" != "Python $VERSION" || "$FORCE" == true ]]; then
+if ! command -v python$MAJOR >/dev/null || [[ "$FORCE" == true ]]; then
     echo "Start installing python$MAJOR"
 
     apt update && \
@@ -58,7 +58,7 @@ else
 fi
 
 
-if [[ "$FORCE" == true ]]; then
+if [[ "$PIP" == true ]]; then
     echo "Start installing python requirements"
 
     /venv/bin/pip install -r requirements.txt
