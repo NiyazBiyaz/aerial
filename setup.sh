@@ -1,4 +1,8 @@
-chmod +x install_dotnet.sh install_python.sh install_pip_libs.sh
+#!/bin/bash
 
-./setup/dotnet.sh
-./setup/python.sh
+chmod +x ./scripts/dotnet.sh ./scripts/python.sh
+
+./scripts/dotnet.sh
+./scripts/python.sh -M 3.13 -m 5
+
+cd /workspaces/aerial
