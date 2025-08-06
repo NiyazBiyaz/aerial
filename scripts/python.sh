@@ -1,39 +1,5 @@
 #!/bin/bash
 
-install_libs() {
-    apt update && \
-        apt install -y \
-        build-essential \
-        zlib1g-dev \
-        libncurses5-dev \
-        libgdbm-dev \
-        libnss3-dev \
-        libssl-dev \
-        libreadline-dev \
-        libffi-dev \
-        libsqlite3-dev \
-        wget \
-        libbz2-dev \
-        cmake \
-        git && \
-        apt clean && rm -rf /var/lib/apt/lists/*
-}
-
-
-install_python() {
-    mkdir /tmp/python && cd /tmp/python
-
-    wget https://www.python.org/ftp/python/$1/Python-$1.tgz && \
-        tar xzf Python-$1.tgz && \
-        cd Python-$1 && \
-        CFLAGS="-O3 -march=native" ./configure --enable-optimizations --with-ensurepip=install && \
-        make -j$(nproc) && make altinstall && \
-        cd / && rm -rf /tmp/python
-
-    python$2 -m venv /venv &&
-        /venv/bin/pip install --upgrade pip
-    }
-
 MAJOR=""
 MINOR=""
 FORCE=false
@@ -55,13 +21,45 @@ VERSION="$MAJOR.$MINOR"
 
 
 if [[ "$(python --version)" != "Python $VERSION" || "$FORCE" == true ]]; then
-    install_libs
-    install_python -M $VERSION -m $MAJOR
+    echo "Start installing python$MAJOR"
+
+    apt update && \
+        apt install -y \
+        build-essential \
+        zlib1g-dev \
+        libncurses5-dev \
+        libgdbm-dev \
+        libnss3-dev \
+        libssl-dev \
+        libreadline-dev \
+        libffi-dev \
+        libsqlite3-dev \
+        wget \
+        libbz2-dev \
+        cmake \
+        git && \
+        apt clean && rm -rf /var/lib/apt/lists/*
+
+
+    mkdir /tmp/python && cd /tmp/python
+
+    wget https://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz && \
+        tar xzf Python-$VERSION.tgz && \
+        cd Python-$VERSION && \
+        CFLAGS="-O3 -march=native" ./configure --enable-optimizations --with-ensurepip=install && \
+        make -j$(nproc) && make altinstall && \
+        cd / && rm -rf /tmp/python
+
+    python$MAJOR -m venv /venv &&
+        /venv/bin/pip install --upgrade pip
+
 else 
     echo "python$MAJOR is already installed"
 fi
 
 
 if [[ "$FORCE" == true ]]; then
+    echo "Start installing python requirements"
+
     /venv/bin/pip install -r requirements.txt
 fi
