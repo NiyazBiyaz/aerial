@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 apt update && apt install wget git -y
 
 if ! command -v getoptions >/dev/null; then
@@ -16,3 +18,5 @@ chmod +x ./scripts/dotnet.sh ./scripts/python.sh
 ./scripts/python.sh -M 3.13 -m 5
 
 cd /workspaces/aerial
+
+echo "Done!"
