@@ -30,3 +30,8 @@ wget https://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz && \
 
 python$BASE_VERSION -m venv /venv &&
     /venv/bin/pip install --upgrade pip
+
+
+cd /workdir/aerial
+
+/venv/bin/pip install -r requirements.txt
