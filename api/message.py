@@ -4,13 +4,14 @@ import enum
 
 @dataclass
 class Message:
-    type: "Types"
+    tag: "Tags"
     content: str
 
 
 @enum.unique
-class Types(enum.Enum):
+class Tags(enum.Enum):
     MESSAGE  = 1
     DONE  = 2
     ERROR = 3
     EXTENRAL_REQUEST = 4
+    EXTERNAL_ERROR = 5
