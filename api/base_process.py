@@ -21,14 +21,9 @@ class BaseProcess(mpc.Process):
         super().__init__(*args, **kwargs)
         self.input = input_queue
         self._output = output_queue
-        self._running = True
 
 
     def run(self):
-        while self._running:
+        while True:
             msg = self.input.get()
             self.on_message(msg)
-
-
-    def close(self):
-        self._running = False
