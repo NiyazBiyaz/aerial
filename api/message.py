@@ -13,5 +13,5 @@ class Tags(enum.Enum):
     MESSAGE  = 1
     DONE  = 2
     ERROR = 3
-    EXTENRAL_REQUEST = 4
+    EXTERNAL_REQUEST = 4
     EXTERNAL_ERROR = 5

@@ -31,7 +31,7 @@ class ChatProcess(BaseProcess):
                 self.output.put(message)
                 self.close()
 
-            case Tags.EXTENRAL_REQUEST:
+            case Tags.EXTERNAL_REQUEST:
                 self.output.put(Message(Tags.MESSAGE, message.content))
 
             case _:
