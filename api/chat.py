@@ -1,38 +1,54 @@
 import abc 
+import asyncio
+import multiprocessing as mpc
+from typing import Union
 
-from .base_process import BaseProcess, MessageTypeError
-from .message import Message, Tags
+from .message import Message, Tags, MessageTypeError
 
 
-class IChat(abc.ABC):
+class BaseChat(abc.ABC):
+
+    def __init__(self, to_me_queue: mpc.Queue, from_me_queue: mpc.Queue):
+        """
+        Args:
+            to_me_queue (Queue): messages **TO** this process
+            from_me_queue (Queue): messages **FROM** this process
+        """
+        self.to_me = to_me_queue
+        self.from_me = from_me_queue
+
 
     @abc.abstractmethod
-    def send(self, content: str): ...
+    async def report_error(self, response: Message) -> None:
+        """
+        Method for notify User about internal error. 
+        Must be overrided from chat-provided environment
 
-    @abc.abstractmethod
-    def report_error(self, content: str): ...
+        Args:
+            response (Message): Information about error 
+        """
 
 
-class ChatProcess(BaseProcess):
+    async def create_answer(self, question: str) -> Union[str | None]:
+        await asyncio.to_thread(self.from_me.put, Message(Tags.MESSAGE, question))
+        response: Message = await asyncio.to_thread(self.to_me.get)
 
-    def __init__(self, chat: IChat, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.chat = chat
-
-    def on_message(self, message: Message):
-        match message.tag:
+        match response.tag:
             case Tags.MESSAGE:
-                self.chat.send(message.content)
+                return response.content
             
             case Tags.ERROR:
-                self.chat.report_error(message.content)
+                await self.report_error(response)
+                return None
 
-            case Tags.EXTERNAL_ERROR:
-                self.output.put(message)
-                self.close()
+            case _ as tag:
+                self.close_aerial(Tags.ERROR)
+                raise MessageTypeError(tag)
 
-            case Tags.EXTERNAL_REQUEST:
-                self.output.put(Message(Tags.MESSAGE, message.content))
 
-            case _:
-                raise MessageTypeError(message.tag, type(self))        
+    async def close_aerial(self, tag: Tags):
+        if tag in [Tags.ERROR, Tags.DONE]:
+            await asyncio.to_thread(self.from_me.put, Message(tag, ""))
+        else:
+            await asyncio.to_thread(self.from_me.put, Message(Tags.ERROR, ""))
+            raise MessageTypeError(tag)
