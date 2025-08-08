@@ -1,4 +1,5 @@
-__all__ = ["IAerial", "IChatProvider"]
+__all__ = ["IAerial", "AerialProcess", "BaseChat", "Tags", "Message"]
 
-from .aerial import IAerial
-from .chat_provider import IChatProvider
+from .aerial import IAerial, AerialProcess
+from .chat import BaseChat
+from .message import Message, Tags
